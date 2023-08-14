@@ -24,9 +24,9 @@ jobs:
 
       - name: Run scripts
         run: |
-          src/download_osm_data.py
-          src/download_regions_data.py
-          src/create_index.py
+          pipenv run python src/download_osm_data.py
+          pipenv run python src/download_regions_data.py
+          pipenv run python src/create_index.py
 
       - name: Push changes to current directory
         run: |
