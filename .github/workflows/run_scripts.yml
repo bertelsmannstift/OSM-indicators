@@ -1,0 +1,38 @@
+name: Run scripts once a year on March 31st
+
+on:
+  schedule:
+    - cron: "0 0 31 3 *"
+  workflow_dispatch:
+
+jobs:
+  run-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies with pipenv
+        run: |
+          pip install pipenv
+          pipenv sync
+
+      - name: Run scripts
+        run: |
+          download_osm_data.py
+          download_regions_data.py
+          create_index.py
+
+      - name: Push changes to current directory
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add data
+          git add output
+          git commit -m "download new data"
+          git push origin main
